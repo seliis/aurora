@@ -2,11 +2,11 @@ import "package:flutter/material.dart";
 import "package:diana/map/map.dart";
 
 void main() {
-  runApp(const Diana());
+  runApp(const Aurora());
 }
 
-class Diana extends StatelessWidget {
-  const Diana({super.key});
+class Aurora extends StatelessWidget {
+  const Aurora({super.key});
 
   @override
   Widget build(BuildContext context) {
