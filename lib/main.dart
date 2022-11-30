@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:diana/map/map.dart";
 
 void main() {
   runApp(const Diana());
@@ -41,10 +42,10 @@ class MainFrame extends StatelessWidget {
   }
 
   static TabBarView _makeTabBarView() {
-    return const TabBarView(
+    return TabBarView(
       children: [
         MapScreen(),
-        Center(child: Text("EmptyTab")),
+        const Center(child: Text("EmptyTab")),
       ],
     );
   }
@@ -59,14 +60,5 @@ class MainFrame extends StatelessWidget {
         body: _makeTabBarView(),
       ),
     );
-  }
-}
-
-class MapScreen extends StatelessWidget {
-  const MapScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("MapScreen"));
   }
 }
