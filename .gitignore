@@ -2,8 +2,6 @@
 pubspec.lock
 .dart_tool
 .vscode
-windows
-assets
 build
 
 # Go

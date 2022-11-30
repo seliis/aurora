@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:diana/map/map.dart";
+import "package:aurora/map/map.dart";
 
 void main() {
   runApp(const Aurora());
