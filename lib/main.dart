@@ -2,12 +2,14 @@ import "package:window_manager/window_manager.dart";
 import "package:flutter/material.dart";
 import "package:aurora/map/map.dart";
 import "package:aurora/udp/udp.dart";
+import "package:aurora/ui/appopenclose.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   windowManager.waitUntilReadyToShow(
     const WindowOptions(
+      titleBarStyle: TitleBarStyle.hidden,
       center: true,
     ),
     () async {
@@ -93,7 +95,8 @@ class MainFrameWidget extends State<MainFrame> with WindowListener {
   }
 
   static AppBar _makeAppBar() {
-    return AppBar(
+    return AppBar( 
+      title: const AppOpenClose(),
       bottom: const TabBar(
         tabs: [
           Tab(text: "MapScreen"),
