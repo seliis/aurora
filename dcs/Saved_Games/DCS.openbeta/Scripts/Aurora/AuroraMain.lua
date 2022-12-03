@@ -12,6 +12,10 @@ do
   aurora.json = require("json")
   aurora.print = function(msg) log.write("Aurora", log.INFO, msg) end
   
+  aurora.dataType = {
+    event = "EVENT"
+  }
+
   aurora.network = {
     socket = require("socket"),
     udp = nil

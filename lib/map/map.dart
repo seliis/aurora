@@ -11,6 +11,7 @@ class MapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlutterMap(
       options: MapOptions(
+        //crs: const Epsg4326(),
         center: _coord,
       ),
       children: [

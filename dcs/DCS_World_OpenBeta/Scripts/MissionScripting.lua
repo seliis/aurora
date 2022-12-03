@@ -8,6 +8,7 @@ do
   package.cpath = string.format("%s;%s%s", package.cpath, DCS_INSTALLED_PATH, "/LuaSocket/?.dll")
 
   aurora_miz = {}
+  aurora_miz.json = loadfile("Scripts/JSON.lua")()
   aurora_miz.print = function(msg) env.info(string.format("AuroraMiz: %s", msg)) end
 
   aurora_miz.network = {
@@ -24,12 +25,23 @@ do
     aurora_miz.print("UDP Connected")
   end
 
-  function sendData(data)
+  function sendData(jsonData)
     if aurora_miz.network.udp then
-      aurora_miz.network.udp:send(string.format("AuroraMiz: %s", data))
+      aurora_miz.network.udp:send(string.format("AuroraMiz: %s", jsonData))
     else
       aurora_miz.print("Can't Find UDP Object (function: sendData)")
     end
+  end
+
+  function makeToJson(data, dataType)
+    if dataType == nil then dataType = "common" end; return aurora_miz.json:encode({
+      header = dataType, body = data
+    })
+  end
+
+  function getPlayerCoordinate()
+    local coord = Unit.getByName("UNIT_TEST"):getPoint()
+    sendData(makeToJson(coord, "point"))
   end
 
   function quitConnection()
