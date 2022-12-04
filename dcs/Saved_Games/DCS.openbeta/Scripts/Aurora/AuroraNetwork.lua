@@ -1,12 +1,9 @@
 do
-<<<<<<< HEAD
-=======
   aurora.network = {
     socket = require("socket"),
     udp = nil
   }
   
->>>>>>> f/dcs
   local function runMizFunc(funcName, jsonString)
     local funcString; if jsonString then
       -- CAUTION: NEED TO WRAP %s WITH SINGLE QUOTES OR OCCUR TYPE ERROR (JSON STRING READ AS TABLE OBJECT IN RECEIVER)
@@ -19,33 +16,13 @@ do
     net.dostring_in("mission", codeString)
   end
 
-<<<<<<< HEAD
-  local function decodeReceivedData(receivedData)
-    if receivedData == "getPlayerCoordinate" then
-      runMizFunc("getPlayerCoordinate")
-=======
   local function decodeDatagramData(datagramData)
     if datagramData.dataBody == "testFunc" then
       runMizFunc("testFunc")
->>>>>>> f/dcs
     end
   end
 
   local function makeToJson(data, dataType)
-<<<<<<< HEAD
-    local jsonData = {
-      dataFrom = "DCS_GUI_ENV",
-      dataType = dataType,
-      dataBody = nil
-    }
-    
-    if dataType == aurora.dataType.event then
-      jsonData.dataBody = data
-    end
-
-    -- Is need to make code for error exception?
-    return aurora.json:encode(jsonData)
-=======
     if dataType == aurora.model.auroraDataTypes.event then
       aurora.model.auroraData.dataBody = data
     end
@@ -54,7 +31,6 @@ do
 
     -- Is need to make code for error exception?
     return aurora.json:encode(aurora.model.auroraData)
->>>>>>> f/dcs
   end
 
   local function sendData(data)
@@ -75,11 +51,7 @@ do
     end
 
     aurora.print("UDP Connected")
-<<<<<<< HEAD
-    sendData(makeToJson("onSimulationStart", aurora.dataType.event))
-=======
     sendData(makeToJson("onSimulationStart", aurora.model.auroraDataTypes.event))
->>>>>>> f/dcs
   end
 
   function aurora.network.onSimulationFrame()
@@ -88,24 +60,14 @@ do
         return
       end
 
-<<<<<<< HEAD
-      decodeReceivedData(data)
-      aurora.print(data)
-=======
       decodeDatagramData(aurora.json:decode(data))
->>>>>>> f/dcs
     end
   end
 
   function aurora.network.onSimulationStop()
     if aurora.network.udp then
-<<<<<<< HEAD
-      aurora.network.udp:send("disconnect")
-      runMizFunc("quitConnection")
-=======
       sendData(makeToJson("onSimulationStop", aurora.model.auroraDataTypes.event))
       runMizFunc("aurora_miz.network:quitConnection")
->>>>>>> f/dcs
       aurora.network.udp:close()
       aurora.network.udp = nil
       aurora.print("UDP Disconnected")

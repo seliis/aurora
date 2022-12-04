@@ -11,18 +11,6 @@ do
   aurora = {}
   aurora.json = require("json")
   aurora.print = function(msg) log.write("Aurora", log.INFO, msg) end
-<<<<<<< HEAD
-  
-  aurora.dataType = {
-    event = "EVENT"
-  }
-
-  aurora.network = {
-    socket = require("socket"),
-    udp = nil
-  }
-=======
->>>>>>> f/dcs
 
   aurora.print("ReadDone: AuroraMain.lua")
 end
