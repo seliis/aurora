@@ -1,6 +1,24 @@
 import "dart:convert";
 import "dart:io";
 
+class AuroraDataFormat {
+  AuroraDataFormat(this.dataFrom, this.dataType, this.dataBody);
+
+  final String dataFrom;
+  final String dataType;
+  final String dataBody;
+
+  AuroraDataFormat.fromJson(Map<String, dynamic> jsonData) : this(jsonData["dataFrom"], jsonData["dataType"], jsonData["dataBody"]);
+
+  Map<String, dynamic> toJson() {
+    return {
+      "dataFrom": dataFrom,
+      "dataType": dataType,
+      "dataBody": dataBody,
+    };
+  }
+}
+
 class UDP {
   static final _instance = UDP._singleInstance();
   factory UDP() => _instance;
@@ -21,12 +39,15 @@ class UDP {
   }
 
   static void decodeReceivedData(String receivedData, InternetAddress address, int port) {
-    print(receivedData);
     final Map<String, dynamic> jsonData = jsonDecode(receivedData);
-    print(jsonData);
-    // if (receivedData == "Aurora: onSimulationStart") {
-    //   sendData("getPlayerCoordinate", address, port);
-    // }
+    final AuroraDataFormat auroraData = AuroraDataFormat.fromJson(jsonData);
+    print(auroraData.dataFrom);
+    print(auroraData.dataType);
+    print(auroraData.dataBody);
+    if (auroraData.dataBody == "onSimulationStart") {
+      final AuroraDataFormat requestData = AuroraDataFormat("Aurora", "Request", "testFunc");
+      sendData(jsonEncode(requestData), address, port);
+    }
   }
 
   static void sendData(String data, InternetAddress address, int port) {
