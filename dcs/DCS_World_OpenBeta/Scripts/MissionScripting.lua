@@ -13,10 +13,7 @@ do
 
   dofile("Scripts/AuroraMiz/AuroraMizModel.lua")
   dofile("Scripts/AuroraMiz/AuroraMizNetwork.lua")
-
-  function testFunc()
-    aurora_miz.network:sendData(aurora_miz.network:makeToJson("testFunc", aurora_miz.model.auroraDataTypes.coordinate))
-  end
+  dofile("Scripts/AuroraMiz/AuroraMizAllotter.lua")
 
   aurora_miz.print("ReadDone: MissionScripting.lua")
 end

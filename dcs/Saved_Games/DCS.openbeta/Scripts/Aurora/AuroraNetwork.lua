@@ -17,8 +17,8 @@ do
   end
 
   local function decodeDatagramData(datagramData)
-    if datagramData.dataBody == "testFunc" then
-      runMizFunc("testFunc")
+    if datagramData.dataBody == "getCampaignInitData" then
+      runMizFunc("aurora_miz.allotter:getCampaignInitData")
     end
   end
 

@@ -1,14 +1,16 @@
 import "dart:convert";
 import "dart:io";
 
-class AuroraDataFormat {
-  AuroraDataFormat(this.dataFrom, this.dataType, this.dataBody);
+enum AuroraDataTypes { request }
+
+class AuroraData {
+  AuroraData(this.dataFrom, this.dataType, this.dataBody);
 
   final String dataFrom;
   final String dataType;
   final String dataBody;
 
-  AuroraDataFormat.fromJson(Map<String, dynamic> jsonData) : this(jsonData["dataFrom"], jsonData["dataType"], jsonData["dataBody"]);
+  AuroraData.fromJson(Map<String, dynamic> jsonData) : this(jsonData["dataFrom"], jsonData["dataType"], jsonData["dataBody"]);
 
   Map<String, dynamic> toJson() {
     return {
@@ -38,15 +40,21 @@ class UDP {
     });
   }
 
+  static String makeRequestData(AuroraDataTypes dataType, String dataBody) {
+    return jsonEncode(AuroraData("Aurora", dataType.toString(), dataBody));
+  }
+
+  static void printAuroraData(AuroraData auroraData) {
+    print("AuroraData: dataFrom = ${auroraData.dataFrom}, dataType = ${auroraData.dataType}, dataBody = ${auroraData.dataBody}");
+  }
+
   static void decodeReceivedData(String receivedData, InternetAddress address, int port) {
     final Map<String, dynamic> jsonData = jsonDecode(receivedData);
-    final AuroraDataFormat auroraData = AuroraDataFormat.fromJson(jsonData);
-    print(auroraData.dataFrom);
-    print(auroraData.dataType);
-    print(auroraData.dataBody);
+    final AuroraData auroraData = AuroraData.fromJson(jsonData);
+    printAuroraData(auroraData);
+
     if (auroraData.dataBody == "onSimulationStart") {
-      final AuroraDataFormat requestData = AuroraDataFormat("Aurora", "Request", "testFunc");
-      sendData(jsonEncode(requestData), address, port);
+      sendData(makeRequestData(AuroraDataTypes.request, "getCampaignInitData"), address, port);
     }
   }
 
