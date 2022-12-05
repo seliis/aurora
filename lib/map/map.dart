@@ -5,7 +5,7 @@ import "package:flutter/material.dart";
 class MapScreen extends StatelessWidget {
   MapScreen({super.key});
 
-  final LatLng _coord = LatLng(41.841944, 41.797778);
+  final LatLng _coord = LatLng(41.841944 - 0.0015, 41.797778 + 0.001775);
 
   @override
   Widget build(BuildContext context) {
