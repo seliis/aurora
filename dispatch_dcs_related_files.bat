@@ -23,10 +23,17 @@ SETLOCAL
     DEL /S /Q %DCS_INSTALLED_PATH%"Scripts\AuroraMiz\*"
   )
 
+  IF NOT EXIST %DCS_INSTALLED_PATH%"Scripts\AuroraMiz\Dependencies\" (
+    MKDIR %DCS_INSTALLED_PATH%"Scripts\AuroraMiz\Dependencies"
+  ) ELSE (
+    DEL /S /Q %DCS_INSTALLED_PATH%"Scripts\AuroraMiz\Dependencies\*"
+  )
+
   COPY /Y %DEV_SAVEDGAME_PATH%"Scripts\Hooks\*" %DCS_SAVEDGAME_PATH%"Scripts\Hooks\"
   COPY /Y %DEV_SAVEDGAME_PATH%"Scripts\Aurora\*" %DCS_SAVEDGAME_PATH%"Scripts\Aurora\"
   COPY /Y %DEV_INSTALLED_PATH%"Scripts\*" %DCS_INSTALLED_PATH%"Scripts\"
   COPY /Y %DEV_INSTALLED_PATH%"Scripts\AuroraMiz\*" %DCS_INSTALLED_PATH%"Scripts\AuroraMiz\"
+  COPY /Y %DEV_INSTALLED_PATH%"Scripts\AuroraMiz\Dependencies\*" %DCS_INSTALLED_PATH%"Scripts\AuroraMiz\Dependencies\"
 ENDLOCAL
 
 CLS

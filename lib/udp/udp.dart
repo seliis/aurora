@@ -1,31 +1,6 @@
+import "package:aurora/model/model.dart";
 import "dart:convert";
 import "dart:io";
-
-enum AuroraDataTypes { REQUEST } // ignore: constant_identifier_names
-
-class AuroraData {
-  AuroraData(this.dataFrom, this.dataType, this.dataBody);
-
-  final String dataFrom;
-  final String dataType;
-  final Map<String, dynamic> dataBody;
-
-  static AuroraData fromJson(Map<String, dynamic> jsonData) {
-    return AuroraData(
-      jsonData["dataFrom"],
-      jsonData["dataType"],
-      jsonData["dataBody"],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      "dataFrom": dataFrom,
-      "dataType": dataType,
-      "dataBody": dataBody,
-    };
-  }
-}
 
 class UDP {
   static final _instance = UDP._singleInstance();
@@ -47,7 +22,7 @@ class UDP {
   }
 
   static String makeRequestData(AuroraDataTypes dataType, Map<String, dynamic> dataBody) {
-    return jsonEncode(AuroraData("Aurora", dataType.toString(), dataBody));
+    return jsonEncode(AuroraData("AURORA_APP", dataType.name, dataBody));
   }
 
   static void printAuroraData(AuroraData auroraData) {
@@ -55,24 +30,32 @@ class UDP {
   }
 
   static void decodeReceivedData(String receivedData, InternetAddress address, int port) {
-    final Map<String, dynamic> jsonData = jsonDecode(receivedData);
-    final AuroraData auroraData = AuroraData.fromJson(jsonData);
-    printAuroraData(auroraData);
+    final AuroraData auroraData = AuroraData.fromJson(jsonDecode(receivedData));
+    // printAuroraData(auroraData);
 
-    if (auroraData.dataType == "EVENT") {
+    if (auroraData.dataType == AuroraDataTypes.event.name) {
       if (auroraData.dataBody["eventName"] == "onSimulationStart") {
         sendData(
-          makeRequestData(AuroraDataTypes.REQUEST, {
+          makeRequestData(AuroraDataTypes.request, {
             "targetFunction": "getCampaignInitData"
           }),
           address,
           port,
         );
+        return;
       }
-    } else if (auroraData.dataType == "NOTIFY") {
-      print(auroraData.dataBody["content"]);
-    } else if (auroraData.dataType == "ZONE") {
-      print(auroraData.dataBody["name"]);
+    }
+
+    if (auroraData.dataType == AuroraDataTypes.notice.name) {
+      final AuroraNoticeData auroraNoticeData = AuroraNoticeData.fromJson(auroraData.dataBody);
+      print(auroraNoticeData.content);
+      return;
+    }
+
+    if (auroraData.dataType == AuroraDataTypes.zone.name) {
+      final AuroraZoneData auroraZoneData = AuroraZoneData.fromJson(auroraData.dataBody);
+      print(auroraZoneData.name);
+      return;
     }
   }
 

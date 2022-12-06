@@ -8,9 +8,9 @@ do
   }
 
   aurora_miz.model.auroraDataTypes = {
-    coordinate = "COORDINATE",
-    notify = "NOTIFY",
-    zone = "ZONE"
+    event = "event",
+    notice = "notice",
+    zone = "zone"
   }
 
   aurora_miz.model.zoneData = {

@@ -17,8 +17,7 @@ do
   end
 
   local function decodeDatagramData(datagramData)
-    aurora.print(datagramData)
-    if datagramData.dataType == "AuroraDataTypes.REQUEST" then
+    if datagramData.dataType == "request" then
       runMizFunc(string.format("aurora_miz.allotter:%s", datagramData.dataBody.targetFunction))
     end
   end
@@ -58,9 +57,6 @@ do
         return
       end
 
-      aurora.print(data .. " " .. type(data))
-      local decoded = aurora.json:decode(data)
-      aurora.print("Decode: " .. aurora.json:encode(decoded) .. " " .. type(decoded))
       decodeDatagramData(aurora.json:decode(data))
     end
   end

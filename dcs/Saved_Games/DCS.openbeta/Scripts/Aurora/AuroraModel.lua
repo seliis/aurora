@@ -8,7 +8,7 @@ do
   }
 
   aurora.model.auroraDataTypes = {
-    event = "EVENT"
+    event = "event"
   }
 
   aurora.print("ReadDone: AuroraModel.lua")

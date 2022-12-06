@@ -30,7 +30,7 @@ do
 
   function aurora_miz.network:quitConnection()
     if aurora_miz.network.udp then
-      self:sendData(self:makeToJson(aurora_miz.model.auroraDataTypes.notify, {content = "quitConnection"}))
+      self:sendData(self:makeToJson(aurora_miz.model.auroraDataTypes.notice, {content = "quitConnection"}))
       aurora_miz.network.udp:close()
       aurora_miz.network.udp = nil
       aurora_miz.print("UDP Disconnected")
