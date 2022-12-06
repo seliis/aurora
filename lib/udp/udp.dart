@@ -72,7 +72,7 @@ class UDP {
     } else if (auroraData.dataType == "NOTIFY") {
       print(auroraData.dataBody["content"]);
     } else if (auroraData.dataType == "ZONE") {
-      print(auroraData.dataBody["zoneName"]);
+      print(auroraData.dataBody["name"]);
     }
   }
 

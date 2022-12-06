@@ -58,8 +58,9 @@ do
         return
       end
 
-      aurora.print(data)
-      aurora.print(aurora.json:decode(data))
+      aurora.print(data .. " " .. type(data))
+      local decoded = aurora.json:decode(data)
+      aurora.print("Decode: " .. aurora.json:encode(decoded) .. " " .. type(decoded))
       decodeDatagramData(aurora.json:decode(data))
     end
   end
