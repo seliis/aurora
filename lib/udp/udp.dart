@@ -1,4 +1,5 @@
 import "package:aurora/model/model.dart";
+import "package:aurora/map/marker.dart";
 import "dart:convert";
 import "dart:io";
 
@@ -54,6 +55,7 @@ class UDP {
 
     if (auroraData.dataType == AuroraDataTypes.zone.name) {
       final AuroraZoneData auroraZoneData = AuroraZoneData.fromJson(auroraData.dataBody);
+      AuroraMarker.markers.add(AuroraMarker.makeMarker(auroraZoneData.latitude, auroraZoneData.longitude));
       print(auroraZoneData.name);
       return;
     }

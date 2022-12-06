@@ -3,7 +3,7 @@ do
 
   function aurora_miz.allotter:getCampaignInitData()
     for _, zoneData in ipairs(mist.DBs.zonesByNum) do
-      local latitude, longitude, altitude = coord.LOtoLL({zoneData.x, zoneData.y, 0})
+      local latitude, longitude, altitude = coord.LOtoLL(zoneData.point)
       
       aurora_miz.model.zoneData.name = zoneData.name
       aurora_miz.model.zoneData.radius = zoneData.radius
