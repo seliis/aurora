@@ -13,7 +13,7 @@ class MapScreen extends StatelessWidget {
       options: MapOptions(
         zoom: 13.0,
         minZoom: 9.0,
-        maxZoom: 17.0,
+        maxZoom: 13.0,
         center: _coord,
         keepAlive: true,
         scrollWheelVelocity: 0.075,

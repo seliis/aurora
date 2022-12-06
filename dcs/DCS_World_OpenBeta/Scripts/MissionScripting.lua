@@ -1,5 +1,6 @@
 do
   dofile("Scripts/ScriptingSystem.lua")
+  dofile("Scripts/AuroraMiz/mist_4_5_107.lua")
 
   DCS_INSTALLED_PATH = lfs.currentdir()
   DCS_SAVEDGAME_PATH = lfs.writedir()

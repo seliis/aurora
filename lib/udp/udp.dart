@@ -1,16 +1,22 @@
 import "dart:convert";
 import "dart:io";
 
-enum AuroraDataTypes { request }
+enum AuroraDataTypes { REQUEST } // ignore: constant_identifier_names
 
 class AuroraData {
   AuroraData(this.dataFrom, this.dataType, this.dataBody);
 
   final String dataFrom;
   final String dataType;
-  final String dataBody;
+  final Map<String, dynamic> dataBody;
 
-  AuroraData.fromJson(Map<String, dynamic> jsonData) : this(jsonData["dataFrom"], jsonData["dataType"], jsonData["dataBody"]);
+  static AuroraData fromJson(Map<String, dynamic> jsonData) {
+    return AuroraData(
+      jsonData["dataFrom"],
+      jsonData["dataType"],
+      jsonData["dataBody"],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -40,7 +46,7 @@ class UDP {
     });
   }
 
-  static String makeRequestData(AuroraDataTypes dataType, String dataBody) {
+  static String makeRequestData(AuroraDataTypes dataType, Map<String, dynamic> dataBody) {
     return jsonEncode(AuroraData("Aurora", dataType.toString(), dataBody));
   }
 
@@ -53,8 +59,20 @@ class UDP {
     final AuroraData auroraData = AuroraData.fromJson(jsonData);
     printAuroraData(auroraData);
 
-    if (auroraData.dataBody == "onSimulationStart") {
-      sendData(makeRequestData(AuroraDataTypes.request, "getCampaignInitData"), address, port);
+    if (auroraData.dataType == "EVENT") {
+      if (auroraData.dataBody["eventName"] == "onSimulationStart") {
+        sendData(
+          makeRequestData(AuroraDataTypes.REQUEST, {
+            "targetFunction": "getCampaignInitData"
+          }),
+          address,
+          port,
+        );
+      }
+    } else if (auroraData.dataType == "NOTIFY") {
+      print(auroraData.dataBody["content"]);
+    } else if (auroraData.dataType == "ZONE") {
+      print(auroraData.dataBody["zoneName"]);
     }
   }
 

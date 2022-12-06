@@ -17,25 +17,23 @@ do
   end
 
   local function decodeDatagramData(datagramData)
-    if datagramData.dataBody == "getCampaignInitData" then
-      runMizFunc("aurora_miz.allotter:getCampaignInitData")
+    aurora.print(datagramData)
+    if datagramData.dataType == "AuroraDataTypes.REQUEST" then
+      runMizFunc(string.format("aurora_miz.allotter:%s", datagramData.dataBody.targetFunction))
     end
   end
 
-  local function makeToJson(data, dataType)
-    if dataType == aurora.model.auroraDataTypes.event then
-      aurora.model.auroraData.dataBody = data
-    end
-
+  local function makeToJson(dataType, dataBody)
     aurora.model.auroraData.dataType = dataType
+    aurora.model.auroraData.dataBody = dataBody
 
     -- Is need to make code for error exception?
     return aurora.json:encode(aurora.model.auroraData)
   end
 
-  local function sendData(data)
+  local function sendData(jsonString)
     if aurora.network.udp then
-      aurora.network.udp:send(data)
+      aurora.network.udp:send(jsonString)
     else
       aurora.print("Can't Find UDP Object (function: sendData)")
     end
@@ -51,7 +49,7 @@ do
     end
 
     aurora.print("UDP Connected")
-    sendData(makeToJson("onSimulationStart", aurora.model.auroraDataTypes.event))
+    sendData(makeToJson(aurora.model.auroraDataTypes.event, {eventName = "onSimulationStart"}))
   end
 
   function aurora.network.onSimulationFrame()
@@ -60,13 +58,15 @@ do
         return
       end
 
+      aurora.print(data)
+      aurora.print(aurora.json:decode(data))
       decodeDatagramData(aurora.json:decode(data))
     end
   end
 
   function aurora.network.onSimulationStop()
     if aurora.network.udp then
-      sendData(makeToJson("onSimulationStop", aurora.model.auroraDataTypes.event))
+      sendData(makeToJson(aurora.model.auroraDataTypes.event, {eventName = "onSimulationStop"}))
       runMizFunc("aurora_miz.network:quitConnection")
       aurora.network.udp:close()
       aurora.network.udp = nil
