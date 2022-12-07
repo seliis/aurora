@@ -8,8 +8,16 @@ do
   }
 
   aurora_miz.model.auroraDataTypes = {
-    notify = "NOTIFY",
-    coordinate = "COORDINATE"
+    event = "event",
+    notice = "notice",
+    zone = "zone"
+  }
+
+  aurora_miz.model.zoneData = {
+    name = nil,
+    radius = nil,
+    latitude = nil,
+    longitude = nil
   }
 
   aurora_miz.print("ReadDone: AuroraMizModel.lua")

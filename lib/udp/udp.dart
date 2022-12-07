@@ -1,31 +1,15 @@
+import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:aurora/model/model.dart";
+import "package:aurora/map/marker.dart";
 import "dart:convert";
 import "dart:io";
-
-enum AuroraDataTypes { request }
-
-class AuroraData {
-  AuroraData(this.dataFrom, this.dataType, this.dataBody);
-
-  final String dataFrom;
-  final String dataType;
-  final String dataBody;
-
-  AuroraData.fromJson(Map<String, dynamic> jsonData) : this(jsonData["dataFrom"], jsonData["dataType"], jsonData["dataBody"]);
-
-  Map<String, dynamic> toJson() {
-    return {
-      "dataFrom": dataFrom,
-      "dataType": dataType,
-      "dataBody": dataBody,
-    };
-  }
-}
 
 class UDP {
   static final _instance = UDP._singleInstance();
   factory UDP() => _instance;
   UDP._singleInstance();
 
+  static final ProviderContainer providerContainer = ProviderContainer();
   static late RawDatagramSocket _server;
 
   static Future<void> initServer() async {
@@ -40,8 +24,8 @@ class UDP {
     });
   }
 
-  static String makeRequestData(AuroraDataTypes dataType, String dataBody) {
-    return jsonEncode(AuroraData("Aurora", dataType.toString(), dataBody));
+  static String makeRequestData(AuroraDataTypes dataType, Map<String, dynamic> dataBody) {
+    return jsonEncode(AuroraData("AURORA_APP", dataType.name, dataBody));
   }
 
   static void printAuroraData(AuroraData auroraData) {
@@ -49,12 +33,33 @@ class UDP {
   }
 
   static void decodeReceivedData(String receivedData, InternetAddress address, int port) {
-    final Map<String, dynamic> jsonData = jsonDecode(receivedData);
-    final AuroraData auroraData = AuroraData.fromJson(jsonData);
-    printAuroraData(auroraData);
+    final AuroraData auroraData = AuroraData.fromJson(jsonDecode(receivedData));
+    // printAuroraData(auroraData);
 
-    if (auroraData.dataBody == "onSimulationStart") {
-      sendData(makeRequestData(AuroraDataTypes.request, "getCampaignInitData"), address, port);
+    if (auroraData.dataType == AuroraDataTypes.event.name) {
+      if (auroraData.dataBody["eventName"] == "onSimulationStart") {
+        sendData(
+          makeRequestData(AuroraDataTypes.request, {
+            "targetFunction": "getCampaignInitData"
+          }),
+          address,
+          port,
+        );
+        return;
+      }
+    }
+
+    if (auroraData.dataType == AuroraDataTypes.notice.name) {
+      final AuroraNoticeData auroraNoticeData = AuroraNoticeData.fromJson(auroraData.dataBody);
+      print(auroraNoticeData.content);
+      return;
+    }
+
+    if (auroraData.dataType == AuroraDataTypes.zone.name) {
+      final AuroraZoneData auroraZoneData = AuroraZoneData.fromJson(auroraData.dataBody);
+      providerContainer.read(AuroraMarker.markersProvider.notifier).addMarker(auroraZoneData.latitude, auroraZoneData.longitude);
+      print(auroraZoneData.name);
+      return;
     }
   }
 

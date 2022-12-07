@@ -13,15 +13,16 @@ do
     aurora_miz.print("UDP Connected")
   end
 
-  function aurora_miz.network:makeToJson(data, dataType)
-    aurora_miz.model.auroraData.dataBody = data
+  function aurora_miz.network:makeToJson(dataType, dataBody)
     aurora_miz.model.auroraData.dataType = dataType
+    aurora_miz.model.auroraData.dataBody = dataBody
+
     return aurora_miz.json:encode(aurora_miz.model.auroraData)
   end
 
-  function aurora_miz.network:sendData(jsonData)
+  function aurora_miz.network:sendData(jsonString)
     if aurora_miz.network.udp then
-      aurora_miz.network.udp:send(jsonData)
+      aurora_miz.network.udp:send(jsonString)
     else
       aurora_miz.print("Can't Find UDP Object (function: sendData)")
     end
@@ -29,7 +30,7 @@ do
 
   function aurora_miz.network:quitConnection()
     if aurora_miz.network.udp then
-      self:sendData(self:makeToJson("quitConnection", aurora_miz.model.auroraDataTypes.notify))
+      self:sendData(self:makeToJson(aurora_miz.model.auroraDataTypes.notice, {content = "quitConnection"}))
       aurora_miz.network.udp:close()
       aurora_miz.network.udp = nil
       aurora_miz.print("UDP Disconnected")
