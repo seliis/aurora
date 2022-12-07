@@ -3,10 +3,10 @@ import "package:flutter_map/flutter_map.dart";
 import "package:latlong2/latlong.dart";
 import "package:flutter/material.dart";
 
-class AuroraMarker {
+class AuroraMarker extends StateNotifier<List<Marker>> {
   static final _instance = AuroraMarker._singleInstance();
+  AuroraMarker._singleInstance() : super(markers);
   factory AuroraMarker() => _instance;
-  AuroraMarker._singleInstance();
 
   static final List<Marker> markers = [
     Marker(
@@ -18,7 +18,7 @@ class AuroraMarker {
     ),
   ];
 
-  static Marker makeMarker(double latitude, double longitude) {
+  Marker _makeMarker(double latitude, double longitude) {
     return Marker(
       point: LatLng(latitude, longitude),
       builder: (context) => const Icon(
@@ -28,5 +28,12 @@ class AuroraMarker {
     );
   }
 
-  static final markersProvider = StateProvider((ref) => markers);
+  void addMarker(double latitude, double longitude) {
+    state = [
+      ...state,
+      _makeMarker(latitude, longitude)
+    ];
+  }
+
+  static final markersProvider = StateNotifierProvider<AuroraMarker, List<Marker>>((ref) => AuroraMarker());
 }

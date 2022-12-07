@@ -1,3 +1,4 @@
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:aurora/model/model.dart";
 import "package:aurora/map/marker.dart";
 import "dart:convert";
@@ -8,6 +9,7 @@ class UDP {
   factory UDP() => _instance;
   UDP._singleInstance();
 
+  static final ProviderContainer providerContainer = ProviderContainer();
   static late RawDatagramSocket _server;
 
   static Future<void> initServer() async {
@@ -55,7 +57,7 @@ class UDP {
 
     if (auroraData.dataType == AuroraDataTypes.zone.name) {
       final AuroraZoneData auroraZoneData = AuroraZoneData.fromJson(auroraData.dataBody);
-      AuroraMarker.markers.add(AuroraMarker.makeMarker(auroraZoneData.latitude, auroraZoneData.longitude));
+      providerContainer.read(AuroraMarker.markersProvider.notifier).addMarker(auroraZoneData.latitude, auroraZoneData.longitude);
       print(auroraZoneData.name);
       return;
     }
