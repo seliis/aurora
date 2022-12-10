@@ -57,7 +57,7 @@ class UDP {
 
     if (auroraData.dataType == AuroraDataTypes.zone.name) {
       final AuroraZoneData auroraZoneData = AuroraZoneData.fromJson(auroraData.dataBody);
-      providerContainer.read(AuroraMarker.markersProvider.notifier).addMarker(auroraZoneData.latitude, auroraZoneData.longitude);
+      providerContainer.read(AuroraMarkerList.provider.notifier).addMarker(auroraZoneData.latitude, auroraZoneData.longitude);
       print(auroraZoneData.name);
       return;
     }

@@ -40,10 +40,10 @@ class MainFrame extends StatefulWidget {
   const MainFrame({super.key});
 
   @override
-  MainFrameWidget createState() => MainFrameWidget();
+  MainFrameState createState() => MainFrameState();
 }
 
-class MainFrameWidget extends State<MainFrame> with WindowListener {
+class MainFrameState extends State<MainFrame> with WindowListener {
   @override
   void initState() {
     windowManager.addListener(this);
