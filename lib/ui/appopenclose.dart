@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppOpenClose extends StatelessWidget {
@@ -7,25 +6,20 @@ class AppOpenClose extends StatelessWidget {
     super.key
   });
 
+  dynamic getDragBar() {
+    return Expanded(
+      child: GestureDetector(
+        child: const SizedBox.shrink(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Expanded(
-          child: GestureDetector(
-            child: ConstrainedBox(
-              constraints: BoxConstraints.expand(),
-              child: const Card(
-                color: Colors.red,
-              ),
-              ),
-              onTapDown: (TapDownDetails details) {
-              windowManager.startDragging();
-              print(details.globalPosition);
-            },
-            ),
-        ),
+        getDragBar(),
         IconButton(
           icon: const Icon(Icons.remove),
           tooltip: "Minimize App",
