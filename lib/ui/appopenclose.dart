@@ -6,10 +6,16 @@ class AppOpenClose extends StatelessWidget {
     super.key
   });
 
-  dynamic getDragBar() {
+  Expanded getDragBar() {
     return Expanded(
       child: GestureDetector(
-        child: const SizedBox.shrink(),
+        child: Container(
+          color: Colors.transparent,
+          height: 100,
+        ),
+        onTapDown: (details) {
+          windowManager.startDragging();
+        }
       ),
     );
   }
