@@ -1,3 +1,6 @@
+import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:aurora/model/model.dart";
+import "package:aurora/map/marker.dart";
 import "dart:convert";
 import "dart:io";
 
@@ -6,6 +9,7 @@ class UDP {
   factory UDP() => _instance;
   UDP._singleInstance();
 
+  static final ProviderContainer providerContainer = ProviderContainer();
   static late RawDatagramSocket _server;
 
   static Future<void> initServer() async {
@@ -20,13 +24,43 @@ class UDP {
     });
   }
 
+  static String makeRequestData(AuroraDataTypes dataType, Map<String, dynamic> dataBody) {
+    return jsonEncode(AuroraData("AURORA_APP", dataType.name, dataBody));
+  }
+
+  static void printAuroraData(AuroraData auroraData) {
+    print("AuroraData: dataFrom = ${auroraData.dataFrom}, dataType = ${auroraData.dataType}, dataBody = ${auroraData.dataBody}");
+  }
+
   static void decodeReceivedData(String receivedData, InternetAddress address, int port) {
-    print(receivedData);
-    final Map<String, dynamic> jsonData = jsonDecode(receivedData);
-    print(jsonData);
-    // if (receivedData == "Aurora: onSimulationStart") {
-    //   sendData("getPlayerCoordinate", address, port);
-    // }
+    final AuroraData auroraData = AuroraData.fromJson(jsonDecode(receivedData));
+    // printAuroraData(auroraData);
+
+    if (auroraData.dataType == AuroraDataTypes.event.name) {
+      if (auroraData.dataBody["eventName"] == "onSimulationStart") {
+        sendData(
+          makeRequestData(AuroraDataTypes.request, {
+            "targetFunction": "getCampaignInitData"
+          }),
+          address,
+          port,
+        );
+        return;
+      }
+    }
+
+    if (auroraData.dataType == AuroraDataTypes.notice.name) {
+      final AuroraNoticeData auroraNoticeData = AuroraNoticeData.fromJson(auroraData.dataBody);
+      print(auroraNoticeData.content);
+      return;
+    }
+
+    if (auroraData.dataType == AuroraDataTypes.zone.name) {
+      final AuroraZoneData auroraZoneData = AuroraZoneData.fromJson(auroraData.dataBody);
+      providerContainer.read(AuroraMarkerList.provider.notifier).addMarker(auroraZoneData.latitude, auroraZoneData.longitude);
+      print(auroraZoneData.name);
+      return;
+    }
   }
 
   static void sendData(String data, InternetAddress address, int port) {

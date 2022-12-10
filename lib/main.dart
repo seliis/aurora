@@ -1,3 +1,4 @@
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:window_manager/window_manager.dart";
 import "package:flutter/material.dart";
 import "package:aurora/map/map.dart";
@@ -18,7 +19,7 @@ void main() async {
     },
   );
 
-  runApp(const Aurora());
+  runApp(const ProviderScope(child: Aurora()));
 }
 
 class Aurora extends StatelessWidget {
@@ -41,10 +42,10 @@ class MainFrame extends StatefulWidget {
   const MainFrame({super.key});
 
   @override
-  MainFrameWidget createState() => MainFrameWidget();
+  MainFrameState createState() => MainFrameState();
 }
 
-class MainFrameWidget extends State<MainFrame> with WindowListener {
+class MainFrameState extends State<MainFrame> with WindowListener {
   @override
   void initState() {
     windowManager.addListener(this);
@@ -113,10 +114,10 @@ class MainFrameWidget extends State<MainFrame> with WindowListener {
   }
 
   static TabBarView _makeTabBarView() {
-    return TabBarView(
+    return const TabBarView(
       children: [
         MapScreen(),
-        const Center(child: Text("EmptyTab")),
+        Center(child: Text("EmptyTab")),
       ],
     );
   }
