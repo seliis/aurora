@@ -38,7 +38,7 @@ class AppOpenClose extends StatelessWidget {
             windowManager.close();
           },
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 0),
       ],
     );
   }
