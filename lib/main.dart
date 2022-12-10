@@ -1,9 +1,9 @@
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:window_manager/window_manager.dart";
+import "package:aurora/ui/window_controls.dart";
 import "package:flutter/material.dart";
 import "package:aurora/map/map.dart";
 import "package:aurora/udp/udp.dart";
-import "package:aurora/ui/appopenclose.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -97,7 +97,7 @@ class MainFrameState extends State<MainFrame> with WindowListener {
 
   static AppBar _makeAppBar() {
     return AppBar( 
-      title: const AppOpenClose(),
+      title: const WindowControls(),
       bottom: const TabBar(
         tabs: [
           Tab(text: "MapScreen"),

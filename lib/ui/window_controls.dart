@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:window_manager/window_manager.dart';
+import "package:window_manager/window_manager.dart";
+import "package:flutter/material.dart";
 
-class AppOpenClose extends StatelessWidget {
-  const AppOpenClose({
+class WindowControls extends StatelessWidget {
+  const WindowControls({
     super.key
   });
 
-  Expanded getDragBar() {
+  Expanded getDragBar(BuildContext context) {
     return Expanded(
       child: GestureDetector(
         child: Container(
           color: Colors.transparent,
-          height: 100,
+          height: MediaQuery.of(context).size.height,
         ),
         onTapDown: (details) {
           windowManager.startDragging();
@@ -25,7 +25,7 @@ class AppOpenClose extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        getDragBar(),
+        getDragBar(context),
         IconButton(
           icon: const Icon(Icons.remove),
           tooltip: "Minimize App",
@@ -33,7 +33,6 @@ class AppOpenClose extends StatelessWidget {
             windowManager.minimize();
           },
         ),
-        
         IconButton(
           icon: const Icon(Icons.fullscreen),
           tooltip: "Maximize App",
@@ -45,7 +44,6 @@ class AppOpenClose extends StatelessWidget {
             }
           },
         ),
-        
         IconButton(
           icon: const Icon(Icons.close),
           tooltip: "Close App",
