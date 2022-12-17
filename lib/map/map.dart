@@ -27,7 +27,7 @@ class MapScreen extends ConsumerWidget {
           urlTemplate: "https://api.mapbox.com/styles/v1/kimahri/clbar27gz000114rvb0c31n74/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoia2ltYWhyaSIsImEiOiJjbGJhbXo2aXEwYWo3M29wYmF0ajJrNGxkIn0.ZH3goD9qaf3RnvYQtdclcQ",
         ),
         MarkerLayer(
-          markers: ref.watch(AuroraMarker.markersProvider),
+          markers: ref.watch(AuroraMarkerList.provider),
         )
       ],
     );
