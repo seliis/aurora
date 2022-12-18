@@ -1,21 +1,32 @@
 // ignore_for_file: avoid_print
-import "dart:convert";
+import "package:aurora/ai/behavior_tree.dart";
 import "dart:io";
 
 void main() async {
-  final udp = await RawDatagramSocket.bind("127.0.0.1", 3000);
+  Sequence root = Sequence();
+  Selector selector = Selector();
 
-  udp.listen((RawSocketEvent event) {
-    Datagram? datagram = udp.receive();
+  Sequence seqMove = Sequence();
+  Sequence seqAttack = Sequence();
 
-    if (datagram != null) {
-      String data = String.fromCharCodes(datagram.data);
-      print("$data from ${datagram.address}:${datagram.port}");
+  Node isDead = Node();
+  Node isContact = Node();
+  Node attack = Node();
+  Node move = Node();
 
-      if (data == "ping") {
-        udp.send(utf8.encode("pong"), datagram.address, datagram.port);
-        print("sent: pong");
-      }
-    }
-  });
+  root.addNode(selector);
+  root.addNode(isDead);
+
+  selector.addNode(seqAttack);
+  selector.addNode(seqMove);
+
+  seqAttack.addNode(isContact);
+  seqAttack.addNode(attack);
+
+  seqMove.addNode(move);
+
+  while (!root.invoke()) {
+    print("---");
+    sleep(const Duration(seconds: 1));
+  }
 }
