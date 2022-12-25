@@ -1,32 +1,66 @@
 // ignore_for_file: avoid_print
+
+import "package:flutter_test/flutter_test.dart";
 import "package:aurora/ai/behavior_tree.dart";
-import "dart:io";
+
+class TestBehavior extends Behavior {
+  int initialized;
+  int terminated;
+  int updated;
+
+  BehaviorStatus returnedStatus;
+  BehaviorStatus terminatedStatus;
+
+  TestBehavior({
+    this.initialized = 0,
+    this.terminated = 0,
+    this.updated = 0,
+    this.returnedStatus = BehaviorStatus.running,
+    this.terminatedStatus = BehaviorStatus.invalid,
+  });
+
+  @override
+  void onInitialize() {
+    ++initialized;
+  }
+
+  @override
+  void onTerminate(BehaviorStatus behaviorStatus) {
+    terminatedStatus = behaviorStatus;
+    ++terminated;
+  }
+
+  @override
+  BehaviorStatus update() {
+    ++updated;
+    return returnedStatus;
+  }
+}
 
 void main() async {
-  Sequence root = Sequence();
-  Selector selector = Selector();
+  test("Initialize", () {
+    TestBehavior testBehavior = TestBehavior();
+    expect(0, testBehavior.initialized);
 
-  Sequence seqMove = Sequence();
-  Sequence seqAttack = Sequence();
+    testBehavior.tick();
+    expect(1, testBehavior.initialized);
+  });
 
-  Node isDead = Node();
-  Node isContact = Node();
-  Node attack = Node();
-  Node move = Node();
+  test("Update", () {
+    TestBehavior testBehavior = TestBehavior();
+    expect(0, testBehavior.updated);
 
-  root.addNode(selector);
-  root.addNode(isDead);
+    testBehavior.tick();
+    expect(1, testBehavior.updated);
+  });
 
-  selector.addNode(seqAttack);
-  selector.addNode(seqMove);
+  test("Terminate", () {
+    TestBehavior testBehavior = TestBehavior();
+    expect(0, testBehavior.terminated);
 
-  seqAttack.addNode(isContact);
-  seqAttack.addNode(attack);
+    testBehavior.returnedStatus = BehaviorStatus.success;
 
-  seqMove.addNode(move);
-
-  while (!root.invoke()) {
-    print("---");
-    sleep(const Duration(seconds: 1));
-  }
+    testBehavior.tick();
+    expect(1, testBehavior.terminated);
+  });
 }
