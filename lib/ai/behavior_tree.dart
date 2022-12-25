@@ -1,30 +1,47 @@
-class Node {
-  bool invoke() => false;
+enum BehaviorStatus { invalid, success, failure, running, aborted }
+
+class BehaviorTree {
+  Behavior? root;
+  void tick() {}
 }
 
-class CompositeNode extends Node {
-  final List<Node> _nodeList = <Node>[];
+class Behavior {
+  Behavior({this.behaviorStatus = BehaviorStatus.invalid});
 
-  void addNode(Node node) => _nodeList.add(node);
-  List<Node> getNodeList() => _nodeList;
-}
+  BehaviorStatus behaviorStatus;
 
-class Selector extends CompositeNode {
-  @override
-  bool invoke() {
-    for (Node node in getNodeList()) {
-      if (node.invoke()) return true;
-    }
-    return false;
+  BehaviorStatus tick() {
+    if (behaviorStatus != BehaviorStatus.running) onInitialize();
+    behaviorStatus = update();
+    if (behaviorStatus != BehaviorStatus.running) onTerminate(behaviorStatus);
+    return behaviorStatus;
   }
-}
 
-class Sequence extends CompositeNode {
-  @override
-  bool invoke() {
-    for (Node node in getNodeList()) {
-      if (!node.invoke()) return false;
-    }
-    return true;
+  void reset() {
+    behaviorStatus = BehaviorStatus.invalid;
   }
+
+  void abort() {
+    onTerminate(BehaviorStatus.aborted);
+    behaviorStatus = BehaviorStatus.aborted;
+  }
+
+  bool isTerminated() {
+    return behaviorStatus == BehaviorStatus.success || behaviorStatus == BehaviorStatus.failure;
+  }
+
+  bool isRunning() {
+    return behaviorStatus == BehaviorStatus.running;
+  }
+
+  BehaviorStatus getBehaviorStatus() {
+    return behaviorStatus;
+  }
+
+  BehaviorStatus update() {
+    return BehaviorStatus.invalid;
+  }
+
+  void onInitialize() {}
+  void onTerminate(BehaviorStatus behaviorStatus) {}
 }
