@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:math';
+
 import "package:flutter_test/flutter_test.dart";
 import "package:aurora/ai/behavior_tree.dart";
 
@@ -37,8 +39,16 @@ class TestBehavior extends Behavior {
   }
 }
 
+class TestSequence extends Sequence {
+  TestSequence(int size) {
+    for (int i = 0; i < size; i++) {
+      behaviorList.add(Behavior());
+    }
+  }
+}
+
 void main() async {
-  test("Initialize", () {
+  test("Behavior: Initialize", () {
     TestBehavior testBehavior = TestBehavior();
     expect(0, testBehavior.initialized);
 
@@ -46,7 +56,7 @@ void main() async {
     expect(1, testBehavior.initialized);
   });
 
-  test("Update", () {
+  test("Behavior: Update", () {
     TestBehavior testBehavior = TestBehavior();
     expect(0, testBehavior.updated);
 
@@ -54,7 +64,7 @@ void main() async {
     expect(1, testBehavior.updated);
   });
 
-  test("Terminate", () {
+  test("Behavior: Terminate", () {
     TestBehavior testBehavior = TestBehavior();
     expect(0, testBehavior.terminated);
 
@@ -62,5 +72,11 @@ void main() async {
 
     testBehavior.tick();
     expect(1, testBehavior.terminated);
+  });
+
+  test("Composite: Sequence, Two Child Fails", () {
+    TestSequence testSequence = TestSequence(2);
+    expect(testSequence.tick(), BehaviorStatus.running);
+    // expect(0, testSequence.behaviorList[0].abort());
   });
 }

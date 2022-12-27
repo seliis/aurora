@@ -6,15 +6,26 @@ class BehaviorTree {
 }
 
 class Behavior {
-  Behavior({this.behaviorStatus = BehaviorStatus.invalid});
-
+  // Private
   BehaviorStatus behaviorStatus;
+
+  // Public
+  Behavior({
+    this.behaviorStatus = BehaviorStatus.invalid,
+  });
 
   BehaviorStatus tick() {
     if (behaviorStatus != BehaviorStatus.running) onInitialize();
     behaviorStatus = update();
     if (behaviorStatus != BehaviorStatus.running) onTerminate(behaviorStatus);
     return behaviorStatus;
+  }
+
+  // Protected
+  void onInitialize() {}
+
+  BehaviorStatus update() {
+    return BehaviorStatus.invalid;
   }
 
   void reset() {
@@ -38,10 +49,41 @@ class Behavior {
     return behaviorStatus;
   }
 
-  BehaviorStatus update() {
-    return BehaviorStatus.invalid;
+  void onTerminate(BehaviorStatus behaviorStatus) {}
+}
+
+class Composite extends Behavior {
+  // Public
+  void addChild(Behavior behavior) {
+    behaviorList.add(behavior);
   }
 
+  void removeChild(Behavior behavior) {
+    behaviorList.remove(behavior);
+  }
+
+  void clearChild() {
+    behaviorList.clear();
+  }
+
+  // Protected
+  List<Behavior> behaviorList = List<Behavior>.empty(growable: true);
+}
+
+class Sequence extends Composite {
+  // Protected
+  @override
   void onInitialize() {}
-  void onTerminate(BehaviorStatus behaviorStatus) {}
+
+  @override
+  BehaviorStatus update() {
+    for (int i = 0; i < behaviorList.length; i++) {
+      BehaviorStatus behaviorStatus = behaviorList[i].tick();
+
+      if (behaviorStatus != BehaviorStatus.success) {
+        return behaviorStatus;
+      }
+    }
+    return BehaviorStatus.success;
+  }
 }
