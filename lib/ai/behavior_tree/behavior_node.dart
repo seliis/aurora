@@ -1,11 +1,6 @@
 import "package:aurora/ai/behavior_tree/behavior_status.dart";
 
 abstract class BehaviorNodeAbstract {
-  // Constructor
-  BehaviorNodeAbstract({
-    this.behaviorStatus = BehaviorStatus.invaild,
-  });
-
   // Public
   BehaviorStatus update();
   BehaviorStatus tick();
@@ -18,12 +13,11 @@ abstract class BehaviorNodeAbstract {
 
   BehaviorStatus getBehaviorStatus();
 
-  // Event
   void onInitialize();
   void onTerminate(BehaviorStatus behaviorStatus);
 
   // Private
-  BehaviorStatus behaviorStatus;
+  BehaviorStatus behaviorStatus = BehaviorStatus.invaild;
 }
 
 class BehaviorNode extends BehaviorNodeAbstract {
